@@ -4,7 +4,7 @@ from datetime import date
 from statistics import median, quantiles
 from common import *
 
-def run(p):
+def legacy_run(p):
     h,rows=read_csv(p.get('csv',''));nulls={'','null','none','n/a'}
     required=columns(p.get('required'),h);unique=columns(p.get('unique'),h)
     findings=[];profile=[];chart=[];missing_total=0
@@ -37,3 +37,11 @@ def run(p):
     if duplicates:findings.append(finding('warning',f'{duplicates} exact duplicate row(s)','Review ingestion retries or deduplication policy.'))
     if not findings:findings.append(finding('success','No issues found by the selected checks','This does not establish semantic correctness. Add business-specific checks for your dataset.'))
     return result('Data profile complete',[metric('Rows',len(rows)),metric('Columns',len(h)),metric('Completeness',f'{100*(1-missing_total/(len(rows)*len(h))):.1f}%'),metric('Duplicate rows',duplicates)],['Column','Inferred type','Distinct values','Missing','Completeness','Numeric range'],profile,findings,chart)
+
+
+def run(p):
+    if not isinstance(p,dict):raise ValueError("Send a JSON object.")
+    if p.get("workspace")=="studio":
+        from lab import run as studio_run
+        return studio_run(p)
+    return legacy_run(p)
