@@ -4,6 +4,10 @@
 
 Profile a CSV, uncover missing values, and apply explicit quality rules. Turn a first look into a reproducible data-quality report.
 
+## Live workspace
+
+![DataLens running the sample dataset](docs/preview.jpg)
+
 ## What works
 
 - Column type inference
